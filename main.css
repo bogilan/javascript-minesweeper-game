@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.board {
+    width: 400px;
+    height: 400px;
+    background-color: gray;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.board div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid gainsboro;
+    box-shadow: inset 6px 6px 10px 0 rgba(0, 0, 0, 0.4),
+                inset -6px -6px 10px 0 rgba(255, 255, 255, 0.4);
+}
+
+.board div.revealed {
+    box-shadow: none;   
+}
