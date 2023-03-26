@@ -8,6 +8,8 @@
     width: 400px;
     height: 400px;
     background-color: gray;
+    color: white;
+    font-weight: bold;
     display: flex;
     flex-wrap: wrap;
 }
