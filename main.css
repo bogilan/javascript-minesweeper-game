@@ -4,6 +4,26 @@
     box-sizing: border-box;
 }
 
+
+.game-status {
+    height: 50px;
+    width: 400px;
+    background-color: rgb(231, 231, 231);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.game-status > span {
+    width: 100px;
+    text-align: center;
+}
+
+.game-state {
+    cursor: pointer;
+}
+
 .board {
     width: 400px;
     height: 400px;
@@ -21,8 +41,9 @@
     width: 40px;
     height: 40px;
     border: 1px solid gainsboro;
-    box-shadow: inset 6px 6px 10px 0 rgba(0, 0, 0, 0.4),
-                inset -6px -6px 10px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: inset 6px 6px 10px 0 rgba(0, 0, 0, 0.6),
+                inset -6px -6px 10px 0 rgba(255, 255, 255, 0.6);
+    cursor: pointer;
 }
 
 .board div.revealed {
