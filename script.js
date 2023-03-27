@@ -1,4 +1,7 @@
 const gameBoard = document.querySelector('.board');
+const timer = document.querySelector('.time-counter');
+const flagCounter = document.querySelector('.flag-counter');
+const gameState = document.querySelector('.game-state');
 
 let boardWidth = 10;
 const squaresNum = boardWidth * boardWidth;
@@ -6,7 +9,29 @@ let bombsNum = 10;
 let squares = [];
 let bombsFlagged = 0;
 let squaresRevealed = 0;
+let time = 0;
+let startTimer;
+let gameOver = false;
+
+// Create new board on screen load
 createBoard();
+
+// START NEW GAME
+// restart all variables and create new board
+gameState.addEventListener('click', ()=> {
+  gameState.textContent = '😄';
+  squares = [];
+  bombsFlagged = 0;
+  squaresRevealed = 0;
+  time = 0;
+  gameOver = false;
+  gameBoard.innerHTML = '';
+  createBoard();
+  clearInterval(startTimer);
+  startTimer = false;
+  flagCounter.textContent = '000';
+  timer.textContent = '000';
+});
 
 // CREATE GAME BOARD
 function createBoard() {
@@ -30,8 +55,23 @@ function createBoard() {
           }
         });
         square.addEventListener('contextmenu', (e)=> { // on right click
-          e.preventDefault(); 
+          e.preventDefault();
+          if (gameOver) {
+            return; // do nothing if the game is over
+          }
           toggleFlag(square); // toggle flag on the square
+        });
+        square.addEventListener('mousedown', function() { // change game icon on holding mouse key
+          if (gameOver) {
+            return; // do nothing if the game is over
+          }
+          gameState.textContent = '😅';
+        });
+        square.addEventListener('mouseup', function() { // change game icon on after mouse key press
+          if (gameOver) {
+            return; // do nothing if the game is over
+          }
+          gameState.textContent = '😄';
         });
     }
     
@@ -49,13 +89,20 @@ function shuffleArray(array) {
 
 // REVEAL CLICKED SQUARE
 function revealSquare(square) {
+    // Exit function if game is already over
+    if (gameOver) {
+      return; // do nothing if the game is over
+    }
     // If the square contains a bomb, reveal all bombs
     if (square.classList.contains('bomb')) {
       squares.forEach(square => {
         if(square.classList.contains('bomb')) {
           square.textContent = `💣`;
         } 
-      }) 
+      })
+      gameState.innerHTML =  `You lost!<br>😫`;
+      clearInterval(startTimer);
+      gameOver = true;
     } else { // If the square does not contain a bomb, reveal adjacent squares and display the number of adjacent bombs
       // get the number of adjacent mines
       const adjacentMines = getAdjacentMines(square);
@@ -122,6 +169,9 @@ function revealAdjacentSquares(row, col) {
 
 // TOGGLE FLAG
 function toggleFlag(square) {
+  if (gameOver) {
+    return; // do nothing if the game is over
+  }
   // check if the square has already been revealed
   if (!square.classList.contains('revealed')) {
     // add flag if the square doesn't have one
@@ -135,6 +185,16 @@ function toggleFlag(square) {
       bombsFlagged--;
     }
   }
+  // display flag number
+  if(bombsFlagged < 10) {
+    flagCounter.textContent = `00${bombsFlagged}`;  
+  }
+  else if(bombsFlagged < 99) {
+    flagCounter.textContent = `0${bombsFlagged}`;  
+  }
+  else {
+    flagCounter.textContent = bombsFlagged;
+  }   
   // check for the win
   checkWin();
 }
@@ -145,6 +205,48 @@ function checkWin() {
   // if all revealed squares and flagged bombs combined are equal to toal squares number
   // and flagged bombs number is equal to total bombs number
   if (squaresRevealed + bombsFlagged === squaresNum && bombsFlagged === bombsNum) {
-    alert('You Won!');
+    gameState.innerHTML = `You won!<br>😎`;
+    clearInterval(startTimer);
+    gameOver = true;
+    console.log(squaresRevealed);
+    console.log(bombsFlagged);
   }
+}
+
+
+// START TIMER ON LEFT OR RIGHT CLICK
+// if timer is not already started and game is not over
+gameBoard.addEventListener('click', ()=> {
+  if (gameOver) {
+    return; // do nothing if the game is over
+  }
+  if (startTimer) {
+    return; // do nothing if the timer is already running
+  }
+  startTimer = setInterval(updateTimer, 1000);
+});
+
+gameBoard.addEventListener('contextmenu', ()=> {
+  if (gameOver) {
+    return; // do nothing if the game is over
+  }
+  if (startTimer) {
+    return; // do nothing if the timer is already running
+  }
+  startTimer = setInterval(updateTimer, 1000);
+});
+
+
+// TIMER FUNCTION
+function updateTimer() {
+    time++;
+    if(time < 10) {
+      timer.textContent = `00${time}`;  
+    }
+    else if(time < 99) {
+      timer.textContent = `0${time}`;  
+    }
+    else {
+      timer.textContent = time;
+    }    
 }
