@@ -1,10 +1,12 @@
+const gameContainer = document.querySelector('.game-container');
 const gameBoard = document.querySelector('.board');
 const timer = document.querySelector('.time-counter');
 const flagCounter = document.querySelector('.flag-counter');
 const gameState = document.querySelector('.game-state');
+const selectedLevel = document.querySelector('#levels');
 
 let boardWidth = 10;
-const squaresNum = boardWidth * boardWidth;
+let squaresNum = boardWidth * boardWidth;
 let bombsNum = 10;
 let squares = [];
 let bombsFlagged = 0;
@@ -12,13 +14,41 @@ let squaresRevealed = 0;
 let time = 0;
 let startTimer;
 let gameOver = false;
+let gameLevel = 'medium';
 
-// Create new board on screen load
-createBoard();
+// Start New Game on screen load
+startNewGame();
 
-// START NEW GAME
+// Change Game Level
+selectedLevel.addEventListener('change', (e) => {
+  gameLevel = e.target.value; // update game level based on selected value
+  if(gameLevel === 'easy') {
+    gameContainer.style.width = '200px';
+    boardWidth = 5;
+    bombsNum = 3;
+  }
+  else if (gameLevel === 'medium') {
+    gameContainer.style.width = '400px';
+    boardWidth = 10;
+    bombsNum = 15;
+  }
+  else {
+    gameContainer.style.width = '800px';
+    boardWidth = 20;
+    bombsNum = 50;
+  }
+  squaresNum = boardWidth * boardWidth;
+  startNewGame();
+});
+
+// START NEW GAME ON EMOJI CLICK
 // restart all variables and create new board
 gameState.addEventListener('click', ()=> {
+  startNewGame();
+});
+
+// NEW GAME
+function startNewGame() {
   gameState.textContent = '😄';
   squares = [];
   bombsFlagged = 0;
@@ -31,7 +61,7 @@ gameState.addEventListener('click', ()=> {
   startTimer = false;
   flagCounter.textContent = '000';
   timer.textContent = '000';
-});
+}
 
 // CREATE GAME BOARD
 function createBoard() {
